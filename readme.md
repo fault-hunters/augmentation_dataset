@@ -37,9 +37,9 @@ https://aihub.or.kr/aihubdata/data/view.do?currMenu=115&topMenu=100&searchKeywor
 Torchvision Augmix 라이브러리 사용
 (https://arxiv.org/abs/1912.02781, https://docs.pytorch.org/vision/main/generated/torchvision.transforms.AugMix.html)
 
-* **학습용 (`_train`):** 라벨 조합 (텍스트 NG, Glyph NG)에 따라 폴더를 자동 분류하여 저장
-* **추론용 (`_inference`):** 평가용 데이터셋을 생성
-* **최 (`Phase2_augmentation`):** 프로젝트의 PoC Test를 위한, 마스크(Mask) 이미지까지 포함된 증강
+* **학습 (`_train`):** 라벨 조합 (텍스트 NG, Glyph NG)에 따라 폴더를 자동 분류하여 저장
+* **추론 (`_inference`):** 평가용 데이터셋을 생성
+* **최종 (`Phase2_augmentation`):** 프로젝트의 PoC Test를 위한, 마스크(Mask) 이미지까지 포함된 증강
 
 ![광고 텍스트 불량 감지 시스템 (SKP ASAC) Final](https://github.com/user-attachments/assets/5fa96dbc-32d2-435e-80ce-910dd53ec780)
 
@@ -51,4 +51,5 @@ Torchvision Augmix 라이브러리 사용
 | **특수 효과** | **Stain (Ink Blobs)** | **OpenCV**를 활용해 이미지 위에 무작위 오염(텍스트 가려짐) 효과를 생성 |
 
 ---
+
 
