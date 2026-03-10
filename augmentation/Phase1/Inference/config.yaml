@@ -1,0 +1,74 @@
+# ==========================================
+# Augmentation Configuration (Inference & Finetune)
+# ==========================================
+
+CONFIG:
+  # 멀티프로세싱 워커(CPU 코어) 수. 
+  # 0 이하로 설정 시 '전체 코어 수 - 2'로 자동 계산되어 PC 과부하를 방지합니다.
+  NUM_WORKERS: 0  
+  
+  # 변형된 타겟(Target) 이미지가 저장될 하위 폴더명
+  SUB_TAR: "tar_img"
+  
+  # 변형된 참조(Reference) 이미지가 저장될 하위 폴더명
+  SUB_REF: "ref_img"
+
+# 🎯 [모드별 설정]
+# 파이썬 스크립트 실행 시 입력하는 모드(1: inference, 2: finetune)에 따라 아래 설정이 로드됩니다.
+MODE_CONFIG:
+  inference:
+    TARGET_CSV: 
+      - "inference_metadata_segmentation_binary.csv"
+    OUTPUT_DIR: "Inference_Augmentation"
+    OUTPUT_CSV: "inference_augmentation_log.csv"
+    CHECKPOINT_FILE: "inference_checkpoint.txt"
+    
+  finetune:
+    # 파인튜닝 시에는 두 개의 CSV를 병합하여 증강을 진행합니다.
+    TARGET_CSV: 
+      - "kohonjin.csv"
+      - "fine_tuning_metadata_segmentation_binary.csv"
+    OUTPUT_DIR: "Finetune_Augmentation"
+    OUTPUT_CSV: "finetune_augmentation_log.csv"
+    CHECKPOINT_FILE: "finetune_checkpoint.txt"
+
+# ==========================================
+# [증강 스텝 및 파라미터 설정]
+# 형식: [스텝 순서, 적용 범위, [사용할 변형 기법 리스트]]
+# - pair: 참조(Ref)와 타겟(Tar) 이미지 모두에 동일한 파라미터(Seed)으로 변형 적용
+# - tgt_only: 타겟(Tar) 이미지에만 독립적으로 변형 적용
+# ==========================================
+AUG_STEPS:
+  - [1, "pair", ["shear_M"]]
+  - [2, "tgt_only", ["shear_L", "rot_L", "rot_M", "pers_L"]]
+  - [3, "pair", ["hue_L", "gray_L"]]
+  - [4, "tgt_only", ["elastic_L", "elastic_H", "bright_M", "contrast_L", "sat_L", "eq_H", "noise_L", "stain_M"]]
+
+# 이미 NG인 경우 (label_s=1) 증강을 건너뛸 기하학적 변형 기법들의 리스트입니다.
+FONT_NG_TRIGGERS:
+  - "shear_L"
+  - "shear_M"
+  - "rot_L"
+  - "rot_M"
+  - "pers_L"
+  - "elastic_L"
+  - "elastic_H"
+
+# ⚙️ [기법별 세부 파라미터 맵]
+# 각 증강 기법이 호출될 때 사용될 수치 범위(range) 및 설정값입니다.
+PARAM_MAP:
+  shear_L: {"method": "shear", "range": [5.0, 15.0]}
+  shear_M: {"method": "shear", "range": [20.0, 30.0]}
+  rot_L: {"method": "rotate", "range": [5.0, 15.0]}
+  rot_M: {"method": "rotate", "range": [20.0, 30.0]}
+  pers_L: {"method": "perspective", "range": [0.01, 0.10], "fill": 255}
+  elastic_L: {"method": "elastic", "alpha": [15.0, 30.0], "sigma": [4.0, 5.0]}
+  elastic_H: {"method": "elastic", "alpha": [120.0, 200.0], "sigma": [8.0, 10.0]}
+  hue_L: {"method": "hue", "range": [0.01, 0.05]}
+  gray_L: {"method": "grayscale", "range": [0.1, 0.3]}
+  bright_M: {"method": "brightness", "range": [0.1, 0.2]}
+  contrast_L: {"method": "contrast", "range": [0.53, 0.80]}
+  sat_L: {"method": "saturation", "range": [0.70, 0.95]}
+  eq_H: {"method": "equalize", "range": [0.70, 0.90]}
+  noise_L: {"method": "noise", "range": [0.01, 0.03]}
+  stain_M: {"method": "stain", "count": [10, 15], "opacity": [0.6, 0.8], "scale": [0.05, 0.10]}

@@ -1,0 +1,63 @@
+# =======================================================
+# [1] 기본 실행 설정 (CONFIG)
+# =======================================================
+CONFIG:
+  IS_TEST_MODE: false # 테스트 모드 설정
+  TEST_COUNT: 2
+  # 0으로 설정하면 컴퓨터 CPU 코어 수에 맞춰 (전체 코어 - 2) 합니다.
+  NUM_WORKERS: 0
+  
+  TARGET_CSV: "Seg_filtered.csv"
+  OUTPUT_CSV: "augmentation_log.csv"
+  CHECKPOINT_FILE: "completed_tasks.txt"
+
+# =======================================================
+# [2] 폰트 깨짐 방지 타겟 (FONT_NG_TRIGGERS)
+# =======================================================
+
+# 증강할 이미지가 만약 폰트 불량(label_s=1)인 경우, 건너뛸 기법들 (중복 NG 생성 방지)
+FONT_NG_TRIGGERS:
+  - "shear_L"
+  - "rot_L"
+  - "elastic_L"
+  - "elastic_M"
+  - "elastic_H"
+
+# =======================================================
+# [3] 증강 단계 시나리오 (AUG_STEPS)
+# =======================================================
+# 형식: [단계(int), 범위(pair/tgt_only), [사용할_기법_리스트]]
+AUG_STEPS:
+  - [1, "pair", ["shear_M"]]
+  - [2, "tgt_only", ["shear_L", "rot_L", "rot_M", "pers_L", "pers_H"]]
+  - [3, "pair", ["hue_L", "gray_L"]]
+  - [4, "tgt_only", [
+      "elastic_L", "elastic_M", "elastic_H", "bright_M", 
+      "contrast_L", "contrast_H", "sat_L", "eq_L", "eq_H", 
+      "noise_L", "noise_M", "stain_M"
+    ]]
+
+# =======================================================
+# [4] 증강 기법별 세부 파라미터 (PARAM_MAP)
+# =======================================================
+PARAM_MAP:
+  shear_L:   { method: "shear", range: [5, 15] }      
+  shear_M:   { method: "shear", range: [20, 30] }     
+  rot_L:     { method: "rotate", range: [5, 15] }     
+  rot_M:     { method: "rotate", range: [20, 30] }    
+  pers_L:    { method: "perspective", range: [0.01, 0.10], fill: 255 } 
+  pers_H:    { method: "perspective", range: [0.22, 0.34], fill: 255 } 
+  elastic_L: { method: "elastic", alpha: [15.0, 30.0], sigma: [4.0, 5.0] }
+  elastic_M: { method: "elastic", alpha: [50.0, 100.0], sigma: [5.0, 7.0] }
+  elastic_H: { method: "elastic", alpha: [120.0, 200.0], sigma: [8.0, 10.0] }
+  hue_L:     { method: "hue", range: [0.01, 0.05] }
+  gray_L:    { method: "grayscale", range: [0.1, 0.3] }
+  bright_M:  { method: "brightness", range: [0.1, 0.2] }
+  contrast_L: { method: "contrast", range: [0.53, 0.80] }
+  contrast_H: { method: "contrast", range: [1.05, 1.32] }
+  sat_L:     { method: "saturation", range: [0.7, 0.95] }
+  eq_L:      { method: "equalize", range: [0.1, 0.3] }
+  eq_H:      { method: "equalize", range: [0.7, 0.9] }
+  noise_L:   { method: "noise", range: [0.01, 0.03] }
+  noise_M:   { method: "noise", range: [0.05, 0.1] }
+  stain_M:   { method: "stain", count: [10, 15], opacity: [0.6, 0.8], scale: [0.05, 0.10] }

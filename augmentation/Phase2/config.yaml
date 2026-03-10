@@ -1,0 +1,60 @@
+# ==========================================
+# Augmentation Configuration (Phase 2)
+# ==========================================
+
+CONFIG:
+  # 멀티프로세싱에 할당할 워커(CPU 코어) 수
+  # 0 이하로 설정할 경우, 시스템의 '전체 코어 수 - 2'로 자동 계산되어 PC 멈춤을 방지합니다.
+  # (예: 16코어 PC에서 0으로 설정 시 14개 코어 사용)
+  NUM_WORKERS: 0
+  # 메모리(RAM) 용량 초과(OOM) 방지를 위한 최대 캐시 유지 한도
+  # 증강 작업 시 RAM에 한 번에 올려둘 데이터/캐시의 최대 크기나 개수를 의미합니다.
+  # (메모리가 부족해 스크립트가 튕긴다면 이 수치를 낮추시면 됩니다.)
+  MAX_RAM_CACHE: 5
+
+  INPUT_ROOT: "."
+  SUB_TAR: "tar_img"
+  SUB_REF: "ref_img"
+  SUB_TAR_MASK: "tar_mask"
+  SUB_REF_MASK: "ref_mask"
+
+# [경로 설정]
+MODE_CONFIG:
+  phase2:
+    OUTPUT_DIR: "phase2_augmented_results"
+    OUTPUT_CSV: "phase2_augmented_final_log.csv"
+    DATA_SOURCES:
+      - path: "phase2_train.csv"
+        type: "masked"
+        split: "train"  # 저장될 상위 폴더 (train)
+      - path: "phase2_val.csv"
+        type: "masked"
+        split: "val"    # 저장될 상위 폴더 (val)
+      - path: "phase2_pairs_masked_realfinal.csv"
+        type: "masked"
+        split: "train"  # 저장될 상위 폴더 (train)
+    COLUMN_MAPS:
+      masked:
+        ref: "ref_image"
+        tar: "tar_image"
+        ref_m: "ref_masked"
+        tar_m: "tar_masked"
+
+# ==========================================
+# [증강 스텝 및 파라미터 설정]
+# ==========================================
+AUG_STEPS:
+  - [1, "pair", ["shear_M", "rot_M"]]
+  - [2, "tgt_only", ["bright_M", "contrast_L"]]
+  - [3, "pair", ["hue_L", "gray_L"]]
+  - [4, "tgt_only", ["noise_L", "eq_H"]]
+
+PARAM_MAP:
+  shear_M: {"method": "shear", "range": [20.0, 30.0]}
+  rot_M: {"method": "rotate", "range": [20.0, 30.0]}
+  hue_L: {"method": "hue", "range": [0.01, 0.05]}
+  gray_L: {"method": "grayscale", "range": [0.1, 0.3]}
+  bright_M: {"method": "brightness", "range": [0.1, 0.2]}
+  contrast_L: {"method": "contrast", "range": [0.53, 0.80]}
+  eq_H: {"method": "equalize", "range": [0.70, 0.90]}
+  noise_L: {"method": "noise", "range": [0.01, 0.03]}

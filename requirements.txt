@@ -1,0 +1,10 @@
+numpy
+pandas
+PyYAML
+torch
+torchvision
+Pillow
+tqdm
+google-genai
+fonttools
+python-dotenv
