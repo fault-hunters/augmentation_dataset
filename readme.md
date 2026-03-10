@@ -39,14 +39,16 @@ Torchvision Augmix 라이브러리 사용
 
 * **학습용 (`_train`):** 라벨 조합 (텍스트 NG, Glyph NG)에 따라 폴더를 자동 분류하여 저장
 * **추론용 (`_inference`):** 평가용 데이터셋을 생성
-* **단계별 (`Phase2_augmentation`):** 프로젝트의 PoC Test를 위한, 마스크(Mask) 이미지까지 포함된 증강
+* **최 (`Phase2_augmentation`):** 프로젝트의 PoC Test를 위한, 마스크(Mask) 이미지까지 포함된 증강
 
 ![광고 텍스트 불량 감지 시스템 (SKP ASAC) Final](https://github.com/user-attachments/assets/5fa96dbc-32d2-435e-80ce-910dd53ec780)
 
-분류,적용 기법,상세 내용
-기하학적 변형,"Shear, Rotate, Perspective, Elastic","이미지의 기울기, 회전, 원근감 및 탄성 변형 적용"
-색상 및 대비,"Hue, Brightness, Contrast, Saturation, Equalize","색조, 밝기, 대비, 채도를 조절하여 조명 환경 변화를 재현"
-화질 및 노이즈,"Gaussian Noise, Grayscale",이미지에 노이즈를 추가하거나 흑백 변환을 통해 노이즈가 생긴 환경을 학습
-특수 효과,Stain (Ink Blobs),OpenCV를 활용해 이미지 위에 무작위의 오염 (가려짐, 잉크 튐) 효과를 생성
+| 분류 | 적용 기법 | 상세 내용 |
+| --- | --- | --- |
+| **기하학적 변형** | **Shear, Rotate, Perspective, Elastic** | 이미지의 기울기, 회전, 원근감 및 탄성 변형을 적용하여 촬영 환경의 다양성을 확보 |
+| **색상 및 대비** | **Hue, Brightness, Contrast, Saturation, Equalize** | 색조, 밝기, 대비, 채도를 조절하여 조명 환경 및 카메라 센서의 변화를 재현 |
+| **화질 및 노이즈** | **Gaussian Noise, Grayscale** | 저화질이나 노이즈가 심한 촬영 환경을 재현 |
+| **특수 효과** | **Stain (Ink Blobs)** | **OpenCV**를 활용해 이미지 위에 무작위 오염(텍스트 가려짐) 효과를 생성 |
 
 ---
+
